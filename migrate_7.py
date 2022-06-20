@@ -114,6 +114,71 @@ def is_efi_system():
     return os.path.exists('/sys/firmware/efi')
 
 
+def is_katello_satelite():
+    # type() -> bool
+    """
+    Check if python-qpid-proton(katello-satellite breaking dependency) is installed
+    :return: True if installed, otherwise - False
+    """
+    try:
+        subprocess.check_call(
+            'rpm -q python-qpid-proton &> /dev/null',
+            shell=True,
+        )
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
+
+def remove_katello_satellite_packages():
+    # type() -> None
+    """
+    Remove katello-satellite packages if those are installed on a system
+    :return: None
+    """
+    if get_stage_status('remove_katello_satellite_packages'):
+        return
+    removed_pkgs = [
+        'python-qpid-proton',
+        'katello-agent'
+    ]
+    get_logger().info(
+        'Removing katello-satellite packages: %s',
+        ', '.join(removed_pkgs),
+    )
+    for removed_pkg in removed_pkgs:
+        try:
+            subprocess.check_call(
+                'rpm -q %s &> /dev/null' % removed_pkg,
+                shell=True,
+                )
+        except subprocess.CalledProcessError:
+            get_logger().warning(
+                'Package "%s" is absent in system',
+                removed_pkg,
+            )
+            continue
+        try:
+            subprocess.check_output(
+                'rpm -e --nodeps %s 2>&1' % removed_pkg,
+                shell=True,
+                )
+            get_logger().info(
+                'Package "%s" is removed from system',
+                removed_pkg,
+            )
+        except subprocess.CalledProcessError as error:
+            get_logger().error(
+                'Some error is occurred while erasing rpm package "%s".\n'
+                'Please check the following output:\n'
+                '%s',
+                removed_pkg,
+                error.output,
+            )
+            exit(1)
+    set_successful_stage_status('remove_katello_satellite_packages')
+
+
 def remove_redhat_packages():
     # type() -> None
     """
@@ -528,6 +593,8 @@ def main():
     remove_redhat_packages()
     remove_not_needed_dirs()
     install_centos_packages()
+    if is_katello_satelite():
+        remove_katello_satellite_packages()
     update_the_system()
     synchronization_of_distribution()
     if is_efi_system():

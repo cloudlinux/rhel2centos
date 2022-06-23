@@ -9,7 +9,7 @@ In order to convert your RHEL 7 operating system to CentOS 7 do the following:
    restore point.
 2. Download the [migrate_7.py](migrate_7.py) script:
    ```shell
-   $ curl -O https://raw.githubusercontent.com/cloudlinux/rhel2centos/main/migrate_7.py
+   $ curl -O https://raw.githubusercontent.com/nstankov-bg/rhel2centos/main/migrate_7.py
    ```
 3. Run the script and check its output for errors:
    ```shell

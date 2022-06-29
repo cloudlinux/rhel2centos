@@ -118,6 +118,7 @@ def is_katello_satelite():
     # type() -> bool
     """
     Check if python-qpid-proton(katello-satellite breaking dependency) is installed
+    Also check for python2-qpid-proton(katello-satellite breaking dependency)
     :return: True if installed, otherwise - False
     """
     try:
@@ -125,8 +126,17 @@ def is_katello_satelite():
             'rpm -q python-qpid-proton &> /dev/null',
             shell=True,
         )
+
     except subprocess.CalledProcessError:
         return False
+    try:
+        subprocess.check_call(
+            'rpm -q python2-qpid-proton &> /dev/null',
+            shell=True,
+        )
+    except subprocess.CalledProcessError:
+        return False
+
     return True
 
 
@@ -151,7 +161,7 @@ def remove_katello_satellite_packages():
             subprocess.check_call(
                 'rpm -q %s &> /dev/null' % removed_pkg,
                 shell=True,
-                )
+            )
         except subprocess.CalledProcessError:
             get_logger().warning(
                 'Package "%s" is absent in system',
@@ -162,7 +172,7 @@ def remove_katello_satellite_packages():
             subprocess.check_output(
                 'rpm -e --nodeps %s 2>&1' % removed_pkg,
                 shell=True,
-                )
+            )
             get_logger().info(
                 'Package "%s" is removed from system',
                 removed_pkg,
@@ -201,7 +211,7 @@ def remove_redhat_packages():
             subprocess.check_call(
                 'rpm -q %s &> /dev/null' % removed_pkg,
                 shell=True,
-                )
+            )
         except subprocess.CalledProcessError:
             get_logger().warning(
                 'Package "%s" is absent in system',
@@ -212,7 +222,7 @@ def remove_redhat_packages():
             subprocess.check_output(
                 'rpm -e --nodeps %s 2>&1' % removed_pkg,
                 shell=True,
-                )
+            )
             get_logger().info(
                 'Package "%s" is removed from system',
                 removed_pkg,
@@ -281,7 +291,7 @@ def install_centos_packages():
             subprocess.check_output(
                 'yum localinstall %s -y &> /dev/null' % installed_pkg_url,
                 shell=True,
-                )
+            )
             get_logger().info(
                 'CentOS package "%s" is installed',
                 installed_pkg_name,
@@ -360,7 +370,7 @@ def recreate_grub_config(grub_config_path):
         subprocess.check_output(
             'grub2-mkconfig -o %s 2>&1' % grub_config_path,
             shell=True,
-            )
+        )
     except subprocess.CalledProcessError as error:
         get_logger().error(
             'Some error is occurred while recreating '
@@ -478,7 +488,7 @@ def reinstall_secure_boot_related_packages():
             subprocess.check_output(
                 'yum reinstall -y "%s"' % pkg,
                 shell=True,
-                )
+            )
         except subprocess.CalledProcessError as error:
             get_logger().error(
                 'Some error is occurred while reinstalling '
@@ -504,7 +514,7 @@ def add_boot_record_by_efibootmgr():
         subprocess.check_output(
             'efibootmgr -c -L "CentOS Linux" -l "%s"' % bootloader_path,
             shell=True,
-            )
+        )
         get_logger().info(
             'The new EFI boot record is added for bootloader "%s"',
             bootloader_path,

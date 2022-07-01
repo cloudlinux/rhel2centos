@@ -602,9 +602,9 @@ def main():
     check_supported_os()
     remove_redhat_packages()
     remove_not_needed_dirs()
-    install_centos_packages()
     if is_katello_satelite():
         remove_katello_satellite_packages()
+    install_centos_packages()
     update_the_system()
     synchronization_of_distribution()
     if is_efi_system():

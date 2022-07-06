@@ -18,7 +18,7 @@ In order to convert your RHEL 7 operating system to CentOS 7 do the following:
 4. Ensure that your system was successfully converted:
    ```shell
    ##check release file
-   cat /etc/redhat-release
+   date && cat /etc/os-release && cat /etc/centos-release && cat /etc/redhat-release
    ```
    ```
    ##check that the system boots CentOS kernel by default

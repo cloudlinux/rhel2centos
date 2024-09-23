@@ -201,10 +201,10 @@ def install_centos_packages():
         return
     installed_pkgs = {
         'centos-release':
-            'http://mirror.centos.org/centos/7/os/x86_64/Packages'
+            'http://vault.centos.org/centos/7/os/x86_64/Packages'
             '/centos-release-7-9.2009.0.el7.centos.x86_64.rpm',
         'centos-logos':
-            'http://mirror.centos.org/centos/7/os/x86_64/Packages'
+            'http://vault.centos.org/centos/7/os/x86_64/Packages'
             '/centos-logos-70.0.6-3.el7.centos.noarch.rpm'
     }
     for installed_pkg_name, installed_pkg_url in installed_pkgs.iteritems():

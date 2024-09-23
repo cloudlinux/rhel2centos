@@ -242,18 +242,31 @@ def update_the_system():
     """
     if get_stage_status('update_the_system'):
         return
+
     try:
+        get_logger().info('Modifying YUM repository configuration')
+        # Modify the YUM repository configuration
+        subprocess.check_call(
+            "sudo sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*",
+            shell=True,
+        )
+        subprocess.check_call(
+            "sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*",
+            shell=True,
+        )
+
         get_logger().info('Run updating of system')
         subprocess.check_call(
-            'yum update -y',
+            'sudo yum update -y',
             shell=True,
         )
     except subprocess.CalledProcessError:
         get_logger().error(
-            'Some error is occurred while updating system.'
+            'Some error occurred while updating the system.'
         )
         exit(1)
-    get_logger().info('Updating of system is completed successful')
+
+    get_logger().info('Updating of system is completed successfully')
     set_successful_stage_status('update_the_system')
 
 

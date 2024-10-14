@@ -247,17 +247,17 @@ def update_the_system():
         get_logger().info('Modifying YUM repository configuration')
         # Modify the YUM repository configuration
         subprocess.check_call(
-            "sudo sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*",
+            "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*",
             shell=True,
         )
         subprocess.check_call(
-            "sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*",
+            "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*",
             shell=True,
         )
 
         get_logger().info('Run updating of system')
         subprocess.check_call(
-            'sudo yum update -y',
+            'yum update -y',
             shell=True,
         )
     except subprocess.CalledProcessError:

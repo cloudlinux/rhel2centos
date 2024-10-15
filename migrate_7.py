@@ -203,10 +203,10 @@ def install_centos_packages():
         return
     installed_pkgs = {
         'centos-release':
-            'http://mirror.centos.org/centos/7/os/x86_64/Packages'
+            'http://vault.centos.org/centos/7/os/x86_64/Packages'
             '/centos-release-7-9.2009.0.el7.centos.x86_64.rpm',
         'centos-logos':
-            'http://mirror.centos.org/centos/7/os/x86_64/Packages'
+            'http://vault.centos.org/centos/7/os/x86_64/Packages'
             '/centos-logos-70.0.6-3.el7.centos.noarch.rpm'
     }
     for installed_pkg_name, installed_pkg_url in installed_pkgs.iteritems():
@@ -246,7 +246,19 @@ def update_the_system():
     """
     if get_stage_status('update_the_system'):
         return
+
     try:
+        get_logger().info('Modifying YUM repository configuration')
+        # Modify the YUM repository configuration
+        subprocess.check_call(
+            "sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*",
+            shell=True,
+        )
+        subprocess.check_call(
+            "sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*",
+            shell=True,
+        )
+
         get_logger().info('Run updating of system')
         subprocess.check_call(
             'yum update -y',
@@ -254,10 +266,11 @@ def update_the_system():
         )
     except subprocess.CalledProcessError:
         get_logger().error(
-            'Some error is occurred while updating system.'
+            'Some error occurred while updating the system.'
         )
         exit(1)
-    get_logger().info('Updating of system is completed successful')
+
+    get_logger().info('Updating of system is completed successfully')
     set_successful_stage_status('update_the_system')
 
 

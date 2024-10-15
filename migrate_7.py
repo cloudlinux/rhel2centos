@@ -154,9 +154,11 @@ def remove_redhat_packages():
             )
         except subprocess.CalledProcessError as error:
             get_logger().error(
-                'Some error is occurred while erasing rpm package "%s".\n'
-                'Please check the following output:\n'
-                '%s',
+                (
+                    'Some error is occurred while erasing rpm package "%s".\n'
+                    'Please check the following output:\n'
+                    '%s'
+                ),
                 removed_pkg,
                 error.output,
             )
@@ -223,10 +225,12 @@ def install_centos_packages():
             )
         except subprocess.CalledProcessError as error:
             get_logger().error(
-                'Some error is occurred while installing '
-                'CentOS package "%s".\n',
-                'Please check the following output:\n'
-                '%s',
+                (
+                    'Some error is occurred while installing '
+                    'CentOS package "%s".\n',
+                    'Please check the following output:\n'
+                    '%s'
+                ),
                 installed_pkg_name,
                 error.output,
             )
@@ -298,10 +302,12 @@ def recreate_grub_config(grub_config_path):
             )
     except subprocess.CalledProcessError as error:
         get_logger().error(
-            'Some error is occurred while recreating '
-            'grub config by path "%s".\n',
-            'Please check the following output:\n'
-            '%s',
+            (
+                'Some error is occurred while recreating '
+                'grub config by path "%s".\n',
+                'Please check the following output:\n'
+                '%s'
+            ),
             grub_config_path,
             error.output,
         )
@@ -337,18 +343,22 @@ def get_pkgs_related_to_secure_boot():
             if any(pkg_name.startswith(pkg_prefix)
                    for pkg_prefix in pkg_prefixes):
                 get_logger().info(
-                    'The package "%s" relates to '
-                    'Secure Boot and released by "%s"',
+                    (
+                        'The package "%s" relates to '
+                        'Secure Boot and released by "%s"'
+                    ),
                     pkg,
                     vendor,
                 )
                 result[pkg] = vendor.lower()
     except subprocess.CalledProcessError as error:
         get_logger().error(
-            'Some error is occurred while getting list '
-            'of secure boot related packages.\n'
-            'Please check the following output:\n'
-            '%s',
+            (
+                'Some error is occurred while getting list '
+                'of secure boot related packages.\n'
+                'Please check the following output:\n'
+                '%s'
+            ),
             error.output,
         )
         exit(1)
@@ -373,18 +383,22 @@ def get_kernel_pkg_name_for_default_boot_record():
             shell=True,
         ).strip().split()
         get_logger().info(
-            'Kernel package name "%s" is set for default '
-            'boot record and released by "%s"',
+            (
+                'Kernel package name "%s" is set for default '
+                'boot record and released by "%s"'
+            ),
             kernel_pkg_name,
             vendor,
         )
         return {kernel_pkg_name: vendor.lower()}
     except subprocess.CalledProcessError as error:
         get_logger().error(
-            'Some error is occurred while getting '
-            'a kernel package name for default boot record.\n'
-            'Please check the following output:\n'
-            '%s',
+            (
+                'Some error is occurred while getting '
+                'a kernel package name for default boot record.\n'
+                'Please check the following output:\n'
+                '%s'
+            ),
             error.output,
         )
         exit(1)
@@ -406,8 +420,10 @@ def reinstall_secure_boot_related_packages():
             continue
         try:
             get_logger().info(
-                'Package "%s" is released not by '
-                'CentOS and should reinstalled',
+                (
+                    'Package "%s" is released not by '
+                    'CentOS and should reinstalled'
+                ),
                 pkg,
             )
             subprocess.check_output(
@@ -416,10 +432,12 @@ def reinstall_secure_boot_related_packages():
                 )
         except subprocess.CalledProcessError as error:
             get_logger().error(
-                'Some error is occurred while reinstalling '
-                'a secure boot related package.\n'
-                'Please check the following output:\n'
-                '%s',
+                (
+                    'Some error is occurred while reinstalling '
+                    'a secure boot related package.\n'
+                    'Please check the following output:\n'
+                    '%s'
+                ),
                 error.output,
             )
             exit(1)
@@ -446,9 +464,11 @@ def add_boot_record_by_efibootmgr():
         )
     except subprocess.CalledProcessError as error:
         get_logger().error(
-            'Some error is occurred while adding a new boot EFI record.\n'
-            'Please check the following output:\n'
-            '%s',
+            (
+                'Some error is occurred while adding a new boot EFI record.\n'
+                'Please check the following output:\n'
+                '%s'
+            ),
             error.output,
         )
         exit(1)
@@ -483,9 +503,11 @@ def check_and_set_default_grub_record():
         )
     except subprocess.CalledProcessError as error:
         get_logger().error(
-            'Some error is occurred while set a default GRUB record.\n'
-            'Please check the following output:\n'
-            '%s',
+            (
+                'Some error is occurred while set a default GRUB record.\n'
+                'Please check the following output:\n'
+                '%s'
+            ),
             error.output,
         )
         exit(1)
@@ -504,16 +526,20 @@ def check_supported_os():
     major_version, minor_version, os_name = get_os_version_and_name()
     if major_version != SUPPORTED_MAJOR_VERSION_OS:
         get_logger().info(
-            'Current major version "%s" is not supported by this script.\n'
-            'One is applicable only for major version "%"',
+            (
+                'Current major version "%s" is not supported by this script.\n'
+                'One is applicable only for major version "%"'
+            ),
             major_version,
             SUPPORTED_MAJOR_VERSION_OS,
         )
         exit(0)
     if os_name != SUPPORTED_NAME_OS:
         get_logger().info(
-            'Current OS "%s" is not supported by this script.\n'
-            'One is applicable only for "%s"',
+            (
+                'Current OS "%s" is not supported by this script.\n'
+                'One is applicable only for "%s"'
+            ),
             os_name,
             SUPPORTED_NAME_OS,
         )
